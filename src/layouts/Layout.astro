@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Luca Borghi | Portfolio', description = 'Portfolio personal de un estudiante de Ingeniería en Sistemas interesado en desarrollo web y software.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme');
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      const theme = savedTheme || (prefersLight ? 'light' : 'dark');
+      document.documentElement.dataset.theme = theme;
+    </script>
+    <title>{title}</title>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased">
+    <slot />
+    <script is:inline>
+      const toggleButton = document.getElementById('theme-toggle');
+      const applyTheme = (theme) => {
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem('theme', theme);
+        if (toggleButton) {
+          toggleButton.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+          toggleButton.setAttribute('aria-label', theme === 'dark' ? 'Cambiar al modo claro' : 'Cambiar al modo oscuro');
+        }
+      };
+
+      const currentTheme = document.documentElement.dataset.theme || 'dark';
+      applyTheme(currentTheme);
+
+      toggleButton?.addEventListener('click', () => {
+        const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme);
+      });
+    </script>
+  </body>
+</html>
